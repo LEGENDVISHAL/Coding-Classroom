@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- CSS only -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css"
+		integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/3af2b3043b.js" crossorigin="anonymous"></script>
+    <style>
+        .blog-footer {
+            padding: 2.5rem 0;
+            color: #999;
+            text-align: center;
+            background-color: #dddddd;
+            border-top: .05rem solid #e5e5e5;
+        }
+        .blog-footer p:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+
+    <title>Multiple Code Executer | {% block title %}{% endblock %}</title>
+    
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark border rounded-lg">
+        <a class="navbar-brand align-middle" href="index.html"><img class="mx-2 rounded-circle" src="{{url_for('static', filename = 'images/LOGO.png')}}" alt="logo" width="40"
+                height="40">{% block logo %}{% endblock %}</a>
+        <button class="navbar-toggler btn btn-secondary rounded-circle px-1 mx-2" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span><i class="material-icons">dehaze</i></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="container">
+                <ul class="navbar-nav mr-auto">
+                    {% block nav %}{% endblock %} 
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% block body %}{% endblock %}
+
+    <footer class="blog-footer">
+        <h6>Let us know your valuable feedback.</h6>
+        <p><b>Contact us at :</b></p>
+        <div class="d-flex justify-content-center my-3">
+            <a href="mailto:mceta@gmail.com" style="text-decoration: none;">
+                <button class="btn btn-success my-auto"><i class="fa fa-envelope" style="font-size: 18px; color:white" aria-hidden="true"></i>   mceta@gmail.com</button>
+            </a>
+        </div>
+
+        <p>
+          <a style="text-decoration: none;" href="#">Back to top</a>
+        </p>
+      </footer>
+	
+
+	<!-- JavaScript Bundle with Popper.js -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js"
+		integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>
