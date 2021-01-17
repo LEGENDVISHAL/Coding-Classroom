@@ -28,16 +28,16 @@ class Assignment(db.Model):
         self.code = self.generate_assignment_code()
         self.classroom = classroom
         self.deadline = deadline
-    
+
     def generate_assignment_code(self):
         code = "".join(choices(ascii_letters, k=ASSIGNMENT_CODE_LENGTH))
         while True:
-            if Assignment.query.filter_by(code=code).first() == None:
+            if Assignment.query.filter_by(code=code).first() is None:
                 break
             code = "".join(choices(ascii_letters, k=ASSIGNMENT_CODE_LENGTH))
         return code
-    
+
     def update(self, **kwargs):
-        for key in kwargs.keys():
+        for key in kwargs:
             if hasattr(self, key):
                 setattr(self, key, kwargs[key])

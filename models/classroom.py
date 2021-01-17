@@ -21,18 +21,18 @@ class Classroom(db.Model):
         self.desc = desc
         self.code = self.generate_class_code()
         self.teacher = teacher
-    
+
     def generate_class_code(self):
         code = "".join(choices(ascii_letters, k=CLASS_CODE_LENGTH))
         while True:
-            if Classroom.query.filter_by(code=code).first() == None:
+            if Classroom.query.filter_by(code=code).first() is None:
                 break
             code = "".join(choices(ascii_letters, k=CLASS_CODE_LENGTH))
         return code
-    
+
     def enroll_student(self, student):
         self.students.append(student)
-    
+
     def remove_student(self, student):
         if student in self.students:
             self.students.remove(student)

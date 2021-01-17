@@ -1,15 +1,13 @@
-from flask import request
-
 # Imports
 import json
 import os
 from random import choice
 from string import ascii_letters
 
-# Models
-from models.shared import db
-from models.assignment import Assignment
+from flask import request
 
+# Models
+from models.assignment import Assignment
 
 # Utilities
 from utils.check_file import CheckFile
@@ -34,7 +32,7 @@ def CheckAPI():
         if assignment is None:
             return json.dumps("Invalid assignment")
 
-        
+
         input_cases = assignment.input_cases
         output_cases = assignment.output_cases
         input_list = []
@@ -52,14 +50,14 @@ def CheckAPI():
             for line in case.split("\n"):
                 case_list += case.split(" ")
             output_list.append(case_list)
-        
+
         # print(input_list, output_list)
 
         filename = "".join([letter for count in range(10) for letter in choice(ascii_letters)])
         filename = f"{filename}.{extensions[language]}"
-        with open(filename, "w+") as runFile:
+        with open(filename, "w+") as run_file:
             for line in program.split("\n"):
-                runFile.write(line + "\n")
+                run_file.write(line + "\n")
         if not os.path.exists("compiled"):
             os.mkdir("compiled")
 
@@ -69,13 +67,13 @@ def CheckAPI():
         check_assignment.set_folder("")
         output = check_assignment.run_test()
         # print(output)
-        
+
         for child in os.listdir("compiled"):
             os.remove(os.path.join("compiled", child))
         os.rmdir("compiled")
-        
+
         os.remove(filename)
-    
+
     return json.dumps(output)
 
 def CheckSubmission(assignment_code, language, program):
@@ -100,14 +98,14 @@ def CheckSubmission(assignment_code, language, program):
         for line in case.split("\n"):
             case_list += case.split(" ")
         output_list.append(case_list)
-    
+
     # print(input_list, output_list)
 
     filename = "".join([letter for count in range(10) for letter in choice(ascii_letters)])
     filename = f"{filename}.{extensions[language]}"
-    with open(filename, "w+") as runFile:
+    with open(filename, "w+") as run_file:
         for line in program.split("\n"):
-            runFile.write(line + "\n")
+            run_file.write(line + "\n")
     if not os.path.exists("compiled"):
         os.mkdir("compiled")
 
@@ -121,7 +119,7 @@ def CheckSubmission(assignment_code, language, program):
     for child in os.listdir("compiled"):
         os.remove(os.path.join("compiled", child))
     os.rmdir("compiled")
-    
+
     os.remove(filename)
 
     return "".join(["1" if x == "CORRECT" else "0" for x in output[1:]])

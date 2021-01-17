@@ -7,33 +7,32 @@ from models.student import Student
 from models.teacher import Teacher
 
 # Utilities
-from utils.hashing import check_password, generate_hash
+from utils.hashing import check_password
 
 def LoginUser():
     if request.method == "GET":
         flash("Please login first!! (GET method used for login)", "info")
         return redirect(url_for("home"))
 
-    user_type = request.form.get("user_type")           # Student or Teacher
     email = request.form.get("email")                   # Email
     password = request.form.get("password")             # Password
-  
-    resp = GetUser(email) 
+
+    resp = GetUser(email)
     if not isinstance(resp, User):
         return resp
-    
+
     user = resp
-    
+
     if check_password(user.password, password):
         session["name"] = user.name
         session["email"] = user.email
         session["verified"] = user.verified
         session["user_type"] = user.user_type
     else:
-        flash(f"Incorrect email or password!", "danger")
+        flash("Incorrect email or password!", "danger")
         return redirect(url_for("home"))
-    
-    flash(f"Logged in successfully!", "success")
+
+    flash("Logged in successfully!", "success")
     return redirect(url_for("dashboard"))
 
 def RegisterUser():
@@ -51,11 +50,11 @@ def RegisterUser():
     if password != verify_password:
         flash("Password and verified password do not match!", "warning")
         return redirect(url_for("home"))
-    
+
     if Teacher.query.filter_by(email=email).first() or Student.query.filter_by(email=email).first():
         flash(f"User with email {email} already exists!", "danger")
         return redirect(url_for("home"))
-    
+
     newUser = None
     if user_type == "student":
         newUser = Student(name, email, password)
@@ -72,14 +71,14 @@ def RegisterUser():
     session["verified"] = newUser.verified
     session["user_type"] = newUser.user_type
 
-    flash(f"Registered successfully!", "success")
+    flash("Registered successfully!", "success")
     return redirect(url_for("dashboard"))
 
 def LogoutUser():
     if request.method == "GET":
         flash("Please login first! (GET method used for logout)", "info")
         return redirect(url_for("home"))
-    
+
     del session["name"]
     del session["email"]
     del session["user_type"]
@@ -89,27 +88,27 @@ def LogoutUser():
     return redirect(url_for("home"))
 
 def AuthorizeUser(user_type=None):
-    isAuthorized = True
-    if session.get("name") != None and session.get("email") != None:
+    is_authorized = True
+    if session.get("name") is not None and session.get("email") is not None:
         if user_type is not None and session.get("user_type") != user_type:
-            isAuthorized = False
+            is_authorized = False
     else:
-        isAuthorized = False
+        is_authorized = False
 
-    return isAuthorized
+    return is_authorized
 
 def GetUser(email):
 
-    user = None 
+    user = None
     user = Student.query.filter_by(email=email).first()
-    
+
     if user:
         return user
-    
+
     user = Teacher.query.filter_by(email=email).first()
     if user:
         return user
-    
+
     flash(f"No such user with email {email}!", "danger")
     return redirect(url_for("home"))
 
@@ -121,7 +120,7 @@ def TeacherDashboard():
 
     classes = []
     if user_type == "teacher":
-        
+
         for _class in user.get_classes():
             classes.append({
                 "name": _class.name,

@@ -1,21 +1,30 @@
+# Imports
+import os
+from utils import constants
+
 from flask import Flask
-from flask import render_template, redirect, request, flash, session, url_for
-import os, pathlib
-from utils import constants 
+from flask import render_template, redirect, request, flash, url_for
 
 # Models
 from models.shared import db
 
 # Routes
-from user_management import LoginUser, RegisterUser, LogoutUser, AuthorizeUser, GetUser, TeacherDashboard, StudentDashboard
+from user_management import LoginUser, RegisterUser, LogoutUser, AuthorizeUser
+from user_management import TeacherDashboard, StudentDashboard
+
 from check_assigment import CheckAPI
-from classroom_management import ClassroomCreate, ClassroomMain, ClassroomAddStudent, ClassroomDelete, ClassroomRemoveStudent
+
+from classroom_management import ClassroomCreate, ClassroomMain
+from classroom_management import ClassroomAddStudent, ClassroomDelete, ClassroomRemoveStudent
+
 from classroom_management import AssignmentCreate, AssignmentMain, AssignmentEdit, AssignmentDelete
-from classroom_management import SubmissionDownload, SubmissionDownloadAll, SubmissionDownloadResults
+from classroom_management import SubmissionDownload, SubmissionDownloadAll
+from classroom_management import SubmissionDownloadResults
 
 app = Flask(__name__)
 app.secret_key = "zHxIwnkAAN"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db" #pathlib.Path(os.path.abspath("data.db")).as_uri()
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
+# Alternative -> pathlib.Path(os.path.abspath("data.db")).as_uri()
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 SUBMISSION_FOLDER = constants.SUBMISSION_FOLDER
@@ -25,10 +34,8 @@ if not os.path.exists(f"{SUBMISSION_FOLDER}"):
 
 db.init_app(app)
 # with app.app_context():
-#     # from models.submission import Submission
-#     # Submission.__table__.drop(db.engine)
 #     db.drop_all()
-#     db.create_all() 
+#     db.create_all()
 
 
 @app.route("/")
@@ -47,12 +54,6 @@ def register():
 def logout():
     return LogoutUser()
 
-# @app.route("/clean", methods=["GET"])
-# def clean():
-#     for key in list(session.keys()):
-#         del session[key]
-#     return render_template("home.html")
-
 @app.route("/api/check", methods=["POST"])
 def check_api():
     return CheckAPI()
@@ -60,96 +61,96 @@ def check_api():
 # Student
 @app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
-    isAuthorized = AuthorizeUser("student")
-    if isAuthorized:
+    is_authorized = AuthorizeUser("student")
+    if is_authorized:
         if request.method == "GET":
             return StudentDashboard()
         elif request.method == "POST":
             return ClassroomAddStudent()
-    
-    isAuthorized = AuthorizeUser("teacher")
-    if isAuthorized:
+
+    is_authorized = AuthorizeUser("teacher")
+    if is_authorized:
         return TeacherDashboard()
-    
+
     flash("Unauthorized! Please login first!", "warning")
     return redirect(url_for("home"))
-    
+
 
 @app.route("/classroom/create", methods=["GET", "POST"])
 def classroom_create():
-    isAuthorized = AuthorizeUser("teacher")
-    if not isAuthorized:
+    is_authorized = AuthorizeUser("teacher")
+    if not is_authorized:
         return redirect(url_for("home"))
     return ClassroomCreate()
 
 @app.route("/classroom/<class_code>", methods=["GET", "POST"])
 def classroom_main(class_code):
-    isAuthorized = AuthorizeUser()
-    if not isAuthorized:
+    is_authorized = AuthorizeUser()
+    if not is_authorized:
         return redirect(url_for("home"))
     return ClassroomMain(class_code)
 
 @app.route("/classroom/<class_code>/remove/<student_id>", methods=["GET"])
 def classroom_remove_student(class_code, student_id):
-    isAuthorized = AuthorizeUser()
-    if not isAuthorized:
+    is_authorized = AuthorizeUser()
+    if not is_authorized:
         return redirect(url_for("home"))
     ClassroomRemoveStudent(class_code, student_id)
     return redirect(url_for("classroom_main", class_code=class_code))
 
 @app.route("/classroom/<class_code>/delete", methods=["GET"])
 def classroom_delete(class_code):
-    isAuthorized = AuthorizeUser()
-    if not isAuthorized:
+    is_authorized = AuthorizeUser()
+    if not is_authorized:
         return redirect(url_for("home"))
     return ClassroomDelete(class_code)
 
 @app.route("/classroom/<class_code>/assignment/create", methods=["GET", "POST"])
 def assignment_create(class_code):
-    isAuthorized = AuthorizeUser("teacher")
-    if not isAuthorized:
+    is_authorized = AuthorizeUser("teacher")
+    if not is_authorized:
         return redirect(url_for("home"))
     return AssignmentCreate(class_code)
 
 @app.route("/assignment/<assignment_code>", methods=["GET", "POST"])
 def assignment_main(assignment_code):
-    isAuthorized = AuthorizeUser()
-    if not isAuthorized:
+    is_authorized = AuthorizeUser()
+    if not is_authorized:
         return redirect(url_for("home"))
     return AssignmentMain(assignment_code)
 
 @app.route("/assignment/<assignment_code>/edit", methods=["GET", "POST"])
 def assignment_edit(assignment_code):
-    isAuthorized = AuthorizeUser("teacher")
-    if not isAuthorized:
+    is_authorized = AuthorizeUser("teacher")
+    if not is_authorized:
         return redirect(url_for("home"))
     return AssignmentEdit(assignment_code)
 
 @app.route("/assignment/<assignment_code>/delete", methods=["GET", "POST"])
 def assignment_delete(assignment_code):
-    isAuthorized = AuthorizeUser("teacher")
-    if not isAuthorized:
+    is_authorized = AuthorizeUser("teacher")
+    if not is_authorized:
         return redirect(url_for("home"))
     return AssignmentDelete(assignment_code)
 
 @app.route("/submission/download/<assignment_code>/<file_name>", methods=["GET"])
 def submission_download(assignment_code, file_name):
-    isAuthorized = AuthorizeUser("teacher")
-    if not isAuthorized:
+    is_authorized = AuthorizeUser("teacher")
+    if not is_authorized:
         return redirect(url_for("home"))
     return SubmissionDownload(assignment_code, file_name)
 
 @app.route("/submission/download/<assignment_code>/all", methods=["GET"])
 def submission_download_all(assignment_code):
-    isAuthorized = AuthorizeUser("teacher")
-    if not isAuthorized:
+    is_authorized = AuthorizeUser("teacher")
+    if not is_authorized:
         return redirect(url_for("home"))
     return SubmissionDownloadAll(assignment_code)
 
 @app.route("/submission/download/<assignment_code>/results", methods=["GET"])
 def submission_download_results(assignment_code):
-    isAuthorized = AuthorizeUser("teacher")
-    if not isAuthorized:
+    is_authorized = AuthorizeUser("teacher")
+    if not is_authorized:
         return redirect(url_for("home"))
     return SubmissionDownloadResults(assignment_code, request.host_url)
 
