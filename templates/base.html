@@ -22,11 +22,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/3024-night.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/material.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/neat.css')}}">
-    
+
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
 
-    <title>Multiple Code Executer | {% block title %}{% endblock %}</title>
+    <title>Coding Classroom | {% block title %}{% endblock %}</title>
     {% block style %}
     {% endblock %}
     <style>
@@ -76,7 +76,7 @@
             <img class="mx-2 rounded-circle" src="{{ url_for('static', filename = 'images/LOGO.png') }}" alt="logo"
                 width="40" height="40" />
             <span class="align-middle" style="font-family: 'Balsamiq Sans', cursive; font-size: larger;">
-                Multiple Code Executer <!--{% block logo %}{% endblock %}-->
+                Coding Classroom <!--{% block logo %}{% endblock %}-->
             </span>
         </a>
         <button class="navbar-toggler btn btn-dark mr-2 py-1 border-0" type="button" data-toggle="collapse"
@@ -89,7 +89,7 @@
             <ul class="navbar-nav mr-auto">
                 {% block nav %}{% endblock %}
                 {% if "email" in session %}
-                    
+
                 {% endif %}
             </ul>
             <ul class="navbar-nav align-items-center">
@@ -103,7 +103,7 @@
                         Up</button>
                 </li>
                 {% else %}
-                
+
                 <li class="nav-item mx-1 py-1 text-light mr-4" style="font-size: larger;">
                     {{ session["name"] }}
                 </li>
