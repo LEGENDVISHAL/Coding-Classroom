@@ -1,50 +1,11 @@
-import multiprocessing
 import os
+import multiprocessing
 
 from .check_file import CheckFile
+from utils.__init__ import *
 
-FORMAT = "utf-8"
-ALLOWED_FILE_TYPES = ["py", "c", "java"]
+ALLOWED_FILE_TYPES = ["py", "c", "java", "cpp"]
 COMPILED_FILES = ["out", "class"]
-
-# Helper Functions
-def is_number(number):
-    try:
-        float(number)
-        return True
-    except ValueError:
-        return False
-
-def string_from_test_case(test_input):
-    input_string = ""
-    for digits in test_input:
-        input_string += " ".join(map(str, digits))
-        input_string += "\n"
-    return input_string.encode(FORMAT)
-
-def verify_output(stdout, program_output):
-    digits = []
-    for line in stdout.split("\n"):
-        if not line:
-            continue
-        for number in line.split(" "):
-            if is_number(number):
-                digits.append(float(number))
-            else:
-                digits.append(number)
-
-    for digit, expected_digit  in zip(digits, program_output):
-        if digit != float(expected_digit):
-            return False
-    return True
-
-def replace(array, elem, new_elem):
-    try:
-        index = array.index(elem)
-    except ValueError:
-        return array
-    array[index] = new_elem
-    return array
 
 class CheckFolder:
     '''

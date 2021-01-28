@@ -1,57 +1,14 @@
+import copy
 import os
 import subprocess
-import copy
 
-FORMAT = "utf-8"
-
-# Helper Functions
-def is_number(number):
-    try:
-        float(number)
-        return True
-    except ValueError:
-        return False
-
-def string_from_test_case(test_input):
-    input_string = ""
-    for digits in test_input:
-        input_string += " ".join(map(str, digits))
-        input_string += "\n"
-    return input_string.encode(FORMAT)
-
-def verify_output(stdout, program_output):
-    digits = []
-    for line in stdout.split("\n"):
-        if not line:
-            continue
-        for number in line.split(" "):
-            if is_number(number):
-                digits.append(float(number))
-            else:
-                digits.append(number)
-    print(digits, program_output)
-    print(*zip(digits, program_output))
-    if len(digits) != len(program_output):
-        return False
-    for digit, expected_digit in zip(digits, program_output):
-        if digit != float(expected_digit):
-            return False
-    return True
-
-def replace(array, elem, new_elem):
-    try:
-        index = array.index(elem)
-    except ValueError:
-        return array
-    array[index] = new_elem
-    return array
-
+from utils.__init__ import *
 
 terminal_commands = {
     "c": [["gcc", "file", "-o", "output_file"],  ["output_file"]],
     "cpp": [["g++", "file", "-o", "output_file"], ["output_file"]],
     "java": [["javac", "file", "-d", "output_dir"],  ["java", "file"]],
-    "py": [["python", "file"]],
+    "py": [["python3", "file"]],
 }
 
 class CheckFile:
@@ -127,15 +84,19 @@ class CheckFile:
                                             stdin=subprocess.PIPE, \
                                             stdout=subprocess.PIPE, \
                                             stderr=subprocess.PIPE, shell=True)
-
-            stdout, stderr = execution.communicate(string_from_test_case(test_input))
+            # print(string_from_test_case(test_input))
+            # stdout, stderr = execution.communicate(string_from_test_case(test_input))
+            stdout, stderr = execution.communicate()
             stdout = stdout.decode(FORMAT)
             stderr = stderr.decode(FORMAT)
+
+            test_number += 1
 
             if stderr:
                 # print(f"TEST CASE {test_number} ERROR", stderr)
                 result.append("ERROR \n Output: " + stderr.replace(",", ".").replace("\n", ""))
                 continue
+            print(stdout, ":", test_output)
             if verify_output(stdout, test_output):
                 # print(f"TEST CASE {test_number} CORRECT")
                 result.append("CORRECT")
@@ -144,6 +105,5 @@ class CheckFile:
                 # print(f"TEST CASE {test_number} INCORRECT")
                 result.append("INCORRECT \nOutput: \n" + stdout)
 
-            test_number += 1
         # print(f"{correct_cases}/{len(test_input)} CORRECT")
         return result
