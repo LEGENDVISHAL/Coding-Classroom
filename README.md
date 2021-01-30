@@ -2,6 +2,9 @@
 
 > Platform for both teachers and students where they can share and submit programming (coding) assignments.
 
+![Tests](https://github.com/ritesh-dt/Coding-Classroom/workflows/Tests/badge.svg)
+![Pylint](https://github.com/ritesh-dt/Coding-Classroom/workflows/Pylint/badge.svg)
+
 ### Features:
 For teachers
 1. Create classrooms.
